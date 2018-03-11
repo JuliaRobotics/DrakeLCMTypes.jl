@@ -24,6 +24,9 @@ matrix:
 #before_script: # homebrew for mac
 #  - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
 
+before_script:
+  - julia -e 'Pkg.init(); Pkg.add("LCMCore"); Pkg.checkout("LCMCore"); Pkg.build("LCMCore")'
+
 ## uncomment the following lines to override the default test script
 #script:
 #  - julia -e 'Pkg.clone(pwd()); Pkg.build("DrakeLCMTypes"); Pkg.test("DrakeLCMTypes"; coverage=true)'
