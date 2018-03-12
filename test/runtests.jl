@@ -18,6 +18,22 @@ for name, obj in inspect.getmembers(drake):
 
 =#
 
+
+"""
+Equality test for most types, but we compare LCMType instances
+by looking at their fields, since otherwise == just falls back 
+to === which compares object identity and is thus not very 
+informative.
+"""
+closeenough(x, y) = x == y
+function closeenough(x::LCMType, y::LCMType)
+    (typeof(x) == typeof(y)) || return false
+    for name in fieldnames(x)
+        closeenough(getfield(x, name), getfield(y, name)) || return false
+    end
+    true
+end
+
 @testset "fingerprints" begin
     expected_fingerprints_network_order = Dict(
         body_motion_data_t => -1697438386000409426,
@@ -43,8 +59,17 @@ for name, obj in inspect.getmembers(drake):
     )
 
     for (lcmtype, fingerprint_network_order) in expected_fingerprints_network_order
-        @show lcmtype
-        @test hton(fingerprint(lcmtype)) == fingerprint_network_order
+        @testset "$lcmtype" begin
+            @testset "constructor" begin
+                msg = lcmtype()
+                for name in fieldnames(typeof(msg))
+                    @test closeenough(getfield(msg, name), LCMCore.defaultval(typeof(getfield(msg, name))))
+                end
+            end
+            @testset "fingerprint" begin
+                @test hton(fingerprint(lcmtype)) == fingerprint_network_order
+            end
+        end
     end
 end
 
