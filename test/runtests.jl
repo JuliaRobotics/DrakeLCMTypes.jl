@@ -1,5 +1,5 @@
 using DrakeLCMTypes
-using Base.Test
+using Test
 using LCMCore
 using LCMCore: fingerprint
 
@@ -21,14 +21,14 @@ for name, obj in inspect.getmembers(drake):
 
 """
 Equality test for most types, but we compare LCMType instances
-by looking at their fields, since otherwise == just falls back 
-to === which compares object identity and is thus not very 
+by looking at their fields, since otherwise == just falls back
+to === which compares object identity and is thus not very
 informative.
 """
 closeenough(x, y) = x == y
 function closeenough(x::LCMType, y::LCMType)
     (typeof(x) == typeof(y)) || return false
-    for name in fieldnames(x)
+    for name in fieldnames(typeof(x))
         closeenough(getfield(x, name), getfield(y, name)) || return false
     end
     true
