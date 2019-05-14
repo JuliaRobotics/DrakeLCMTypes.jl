@@ -1,6 +1,6 @@
 name = "DrakeLCMTypes"
 uuid = "6484683b-de53-5689-b9d2-2f18b83297fe"
-versin = "0.2.0"
+version = "0.2.0"
 
 [deps]
 LCMCore = "0ea44823-1ff1-5b9a-8293-5fd55a38e746"
